@@ -1,6 +1,7 @@
 package com.example.android.miwok;
 
 import android.app.Activity;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +13,11 @@ import java.util.ArrayList;
 
 public class WordAdapt extends ArrayAdapter<Word> {
 
-    public WordAdapt(Activity context, ArrayList<Word> words) {
+    private int mColorResourceId;
+
+    public WordAdapt(Activity context, ArrayList<Word> words, int colorResourceId) {
         super(context, 0, words);
+        mColorResourceId = colorResourceId;
     }
 
     @Override
@@ -32,7 +36,21 @@ public class WordAdapt extends ArrayAdapter<Word> {
         defaultTextView.setText(currentWord.getDefaultTranslation());
 
         ImageView iconView = (ImageView) listItemView.findViewById(R.id.icon);
-        iconView.setImageResource(currentWord.getImageResourceId());
+
+        //判断是否有图片属性
+        if(currentWord.hasImage()) {
+            //有则加入ImageView,并显示
+            iconView.setImageResource(currentWord.getImageResourceId());
+            iconView.setVisibility(View.VISIBLE);
+        }else {
+            //没有就隐藏ImageView
+            iconView.setVisibility(View.GONE);
+        }
+
+        View textContainer = listItemView.findViewById(R.id.text_container);
+        int color = ContextCompat.getColor(getContext(), mColorResourceId);
+        textContainer.setBackgroundColor(color);
+
 
         return listItemView;
     }
